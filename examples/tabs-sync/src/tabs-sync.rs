@@ -4,7 +4,7 @@
 
 #![warn(rust_2018_idioms)]
 
-use cli_support::fxa_creds::{get_cli_fxa, get_default_fxa_config};
+use cli_support::fxa_creds::{get_account_and_token, get_cli_fxa, get_default_fxa_config};
 use cli_support::prompt::prompt_char;
 use std::path::Path;
 use std::sync::Arc;
@@ -41,6 +41,12 @@ fn main() -> Result<()> {
     viaduct_reqwest::use_reqwest_backend();
     cli_support::init_logging();
     let opts = Opts::from_args();
+
+    let (_, token_info) = match get_account_and_token(get_default_fxa_config(), &opts.creds_file) {
+        Ok(v) => v,
+        Err(e) => anyhow::bail!("Failed to use saved credentials. {}", e),
+    };
+    let sync_key = token_info.key.unwrap().kid;
 
     let mut cli_fxa = get_cli_fxa(get_default_fxa_config(), &opts.creds_file)?;
     let device_id = cli_fxa.account.get_current_device_id()?;
@@ -86,9 +92,11 @@ fn main() -> Result<()> {
             'S' | 's' => {
                 log::info!("Syncing!");
                 match Arc::clone(&store).sync(
-                    &cli_fxa.client_init,
-                    &cli_fxa.root_sync_key,
-                    &device_id,
+                    cli_fxa.client_init.clone().key_id,
+                    cli_fxa.client_init.clone().access_token,
+                    sync_key.clone(),
+                    cli_fxa.client_init.tokenserver_url.to_string(),
+                    device_id.clone(),
                 ) {
                     Err(e) => {
                         log::warn!("Sync failed! {}", e);

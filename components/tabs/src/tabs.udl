@@ -2,6 +2,15 @@ namespace tabs {
 
 };
 
+[Error]
+enum TabsError {
+    "SyncAdapterError",
+    "JsonError",
+    "UrlParseError",
+    "SqlError",
+    "OpenDatabaseError",
+};
+
 
 interface TabsStore {
     constructor(string path);
@@ -12,13 +21,16 @@ interface TabsStore {
 
     [Self=ByArc]
     void register_with_sync_manager();
+
+    [Throws=TabsError, Self=ByArc]
+    string sync(string key_id, string access_token, string sync_key, string tokenserver_url, string local_id);
 };
 
 // Note that this enum is duplicated in fxa-client.udl (although the underlying type *is*
 // shared). This duplication exists because there's no direct dependency between that crate and
 // this one. We can probably remove the duplication when sync15 gets a .udl file, then we could
 // reference it via an `[Extern=...]typedef`
-enum DeviceType { "Desktop", "Mobile", "Tablet", "VR", "TV", "Unknown" };
+enum TabsDeviceType { "Desktop", "Mobile", "Tablet", "VR", "TV", "Unknown" };
 
 dictionary RemoteTab {
     string title;
@@ -30,6 +42,6 @@ dictionary RemoteTab {
 dictionary ClientRemoteTabs {
     string client_id;
     string client_name;
-    DeviceType device_type;
+    TabsDeviceType device_type;
     sequence<RemoteTab> remote_tabs;
 };

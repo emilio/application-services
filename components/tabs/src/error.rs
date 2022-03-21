@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #[derive(Debug, thiserror::Error)]
-pub enum ErrorKind {
+pub enum TabsError {
     #[error("Error synchronizing: {0}")]
     SyncAdapterError(#[from] sync15::Error),
 
@@ -20,12 +20,4 @@ pub enum ErrorKind {
     OpenDatabaseError(#[from] sql_support::open_database::Error),
 }
 
-error_support::define_error! {
-    ErrorKind {
-        (SyncAdapterError, sync15::Error),
-        (JsonError, serde_json::Error),
-        (UrlParseError, url::ParseError),
-        (SqlError, rusqlite::Error),
-        (OpenDatabaseError, sql_support::open_database::Error),
-    }
-}
+pub type Result<T> = std::result::Result<T, TabsError>;
