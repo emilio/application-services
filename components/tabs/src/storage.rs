@@ -8,6 +8,7 @@ const URI_LENGTH_MAX: usize = 65536;
 const TAB_ENTRIES_LIMIT: usize = 5;
 
 use crate::error::*;
+use crate::DeviceType;
 use rusqlite::{Connection, OpenFlags};
 use serde_derive::{Deserialize, Serialize};
 use sql_support::open_database::{self, open_database_with_flags};
@@ -33,18 +34,18 @@ pub struct ClientRemoteTabs {
         default = "devicetype_default_deser",
         skip_serializing_if = "devicetype_is_unknown"
     )]
-    pub device_type: TabsDeviceType,
+    pub device_type: DeviceType,
     pub remote_tabs: Vec<RemoteTab>,
 }
 
-fn devicetype_default_deser() -> TabsDeviceType {
-    // replace with `TabsDeviceType::default_deser` once #4861 lands.
-    TabsDeviceType::Unknown
+fn devicetype_default_deser() -> DeviceType {
+    // replace with `DeviceType::default_deser` once #4861 lands.
+    DeviceType::Unknown
 }
 
 // Unlike most other uses-cases, here we do allow serializing ::Unknown, but skip it.
-fn devicetype_is_unknown(val: &TabsDeviceType) -> bool {
-    matches!(val, TabsDeviceType::Unknown)
+fn devicetype_is_unknown(val: &DeviceType) -> bool {
+    matches!(val, DeviceType::Unknown)
 }
 
 // Tabs has unique requirements for storage:

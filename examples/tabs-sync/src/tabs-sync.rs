@@ -42,10 +42,7 @@ fn main() -> Result<()> {
     cli_support::init_logging();
     let opts = Opts::from_args();
 
-    let (_, token_info) = match get_account_and_token(get_default_fxa_config(), &opts.creds_file) {
-        Ok(v) => v,
-        Err(e) => anyhow::bail!("Failed to use saved credentials. {}", e),
-    };
+    let (_, token_info) = get_account_and_token(get_default_fxa_config(), &opts.creds_file)?;
     let sync_key = token_info.key.unwrap().kid;
 
     let mut cli_fxa = get_cli_fxa(get_default_fxa_config(), &opts.creds_file)?;
