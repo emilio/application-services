@@ -9,7 +9,7 @@ use interrupt_support::NeverInterrupts;
 use std::cell::RefCell;
 use std::path::Path;
 use std::sync::{Arc, Mutex, Weak};
-use sync15::{sync_multiple, MemoryCachedState, SyncEngine, SyncEngineId};
+use sync15::{sync_multiple, EngineSyncAssociation, MemoryCachedState, SyncEngine, SyncEngineId};
 
 // Our "sync manager" will use whatever is stashed here.
 lazy_static::lazy_static! {
@@ -64,6 +64,12 @@ impl TabsStore {
 
     pub fn remote_tabs(&self) -> Option<Vec<ClientRemoteTabs>> {
         self.storage.lock().unwrap().get_remote_tabs()
+    }
+
+    pub fn reset(self: Arc<Self>) -> Result<()> {
+        let engine = TabsEngine::new(Arc::clone(&self));
+        engine.reset(&EngineSyncAssociation::Disconnected)?;
+        Ok(())
     }
 
     /// A convenience wrapper around sync_multiple.

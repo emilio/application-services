@@ -5,6 +5,7 @@ namespace tabs {
 [Error]
 enum TabsError {
     "SyncAdapterError",
+    "SyncResetError",
     "JsonError",
     "UrlParseError",
     "SqlError",
@@ -21,6 +22,9 @@ interface TabsStore {
 
     [Self=ByArc]
     void register_with_sync_manager();
+
+    [Throws=TabsError, Self=ByArc]
+    void reset();
 
     [Throws=TabsError, Self=ByArc]
     string sync(string key_id, string access_token, string sync_key, string tokenserver_url, string local_id);

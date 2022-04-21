@@ -7,6 +7,9 @@ pub enum TabsError {
     #[error("Error synchronizing: {0}")]
     SyncAdapterError(#[from] sync15::Error),
 
+    #[error("Sync reset error: {0}")]
+    SyncResetError(#[from] anyhow::Error),
+
     #[error("Error parsing JSON data: {0}")]
     JsonError(#[from] serde_json::Error),
 

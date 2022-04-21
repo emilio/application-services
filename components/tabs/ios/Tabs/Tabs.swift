@@ -33,7 +33,13 @@ open class TabsStorage {
         }
     }
 
-    open func sync(unlockInfo: SyncUnlockInfo, localId: String) throws -> String {
+    open func reset() throws {
+        try queue.sync {
+            try self.store.reset()
+        }
+    }
+
+    open func sync(unlockInfo: SyncUnlockInfo) throws -> String {
         return try queue.sync {
             return try self.store
                 .sync(
@@ -41,7 +47,7 @@ open class TabsStorage {
                     accessToken: unlockInfo.fxaAccessToken,
                     syncKey: unlockInfo.syncKey,
                     tokenserverUrl: unlockInfo.tokenserverURL,
-                    localId: localId
+                    localId: unlockInfo.tabsLocalId
                 )
         }
     }
