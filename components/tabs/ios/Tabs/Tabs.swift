@@ -20,7 +20,7 @@ open class TabsStorage {
     }
 
     /// Set the local tabs.
-    open func setLocalTabs(remoteTabs: [RemoteTab]) throws {
+    open func setLocalTabs(remoteTabs: [RemoteTabRecord]) throws {
         try queue.sync {
             self.store.setLocalTabs(remoteTabs: remoteTabs)
         }

@@ -17,6 +17,7 @@ use std::cell::RefCell;
 use std::path::{Path, PathBuf};
 
 pub type TabsDeviceType = crate::DeviceType;
+pub type RemoteTabRecord = RemoteTab;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct RemoteTab {

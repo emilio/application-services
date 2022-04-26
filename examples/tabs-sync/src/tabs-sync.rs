@@ -9,7 +9,7 @@ use cli_support::prompt::prompt_char;
 use std::path::Path;
 use std::sync::Arc;
 use structopt::StructOpt;
-use tabs::{RemoteTab, TabsStore};
+use tabs::{RemoteTabRecord, TabsStore};
 
 use anyhow::Result;
 
@@ -123,7 +123,7 @@ fn main() -> Result<()> {
 }
 
 #[cfg(feature = "with-clipboard")]
-fn read_local_state() -> Vec<RemoteTab> {
+fn read_local_state() -> Vec<RemoteTabRecord> {
     use clipboard::{ClipboardContext, ClipboardProvider};
     println!("Please run the following command in the Firefox Browser Toolbox and copy it.");
     println!(
@@ -156,7 +156,7 @@ fn read_local_state() -> Vec<RemoteTab> {
             .iter()
             .map(|u| u.as_str().unwrap().to_owned())
             .collect();
-        local_state.push(RemoteTab {
+        local_state.push(RemoteTabRecord {
             title,
             url_history,
             icon,
@@ -167,7 +167,7 @@ fn read_local_state() -> Vec<RemoteTab> {
 }
 
 #[cfg(not(feature = "with-clipboard"))]
-fn read_local_state() -> Vec<RemoteTab> {
+fn read_local_state() -> Vec<RemoteTabRecord> {
     println!("This module is build without the `clipboard` feature, so we can't");
     println!("read the local state.");
     vec![]
