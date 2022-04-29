@@ -8,26 +8,26 @@ open class TabsStorage {
     private var store: TabsStore
     private let queue = DispatchQueue(label: "com.mozilla.tabs-storage")
 
-    public init(databasePath: String) throws {
-        store = try TabsStore(path: databasePath)
+    public init(databasePath: String) {
+        store = TabsStore(path: databasePath)
     }
 
     /// Get all tabs by client.
-    open func getAll() throws -> [ClientRemoteTabs] {
+    open func getAll() -> [ClientRemoteTabs] {
         return queue.sync {
             return self.store.getAll()
         }
     }
 
     /// Set the local tabs.
-    open func setLocalTabs(remoteTabs: [RemoteTabRecord]) throws {
-        try queue.sync {
+    open func setLocalTabs(remoteTabs: [RemoteTabRecord]) {
+        queue.sync {
             self.store.setLocalTabs(remoteTabs: remoteTabs)
         }
     }
 
     /// Register with the sync manager
-    open func registerWithSyncManager() throws {
+    open func registerWithSyncManager() {
         return queue.sync {
             return self.store.registerWithSyncManager()
         }
